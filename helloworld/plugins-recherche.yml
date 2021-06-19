@@ -1,0 +1,34 @@
+---
+
+- name: Tester les playbooks de recherche
+  hosts: localhost
+  tasks:
+      - name: Difference fontion lookup et querry
+        vars:
+          lkp: "{{ lookup('file', 'dum.txt', 'dumm.txt') }}" 
+          qr: "{{ query('file', 'dum.txt', 'dumm.txt') }}"
+        debug:
+          var: qr
+#TODO : ecrire des tasks utilisant les filtres pour transformer un lookup en liste, ou un query en chaine de caractère
+        tags:
+          - testlookup
+
+      - name: recherche de variables d'environnement
+        vars:
+          utilisateur: "{{ lookup('env', 'USER') }}"
+          javahome: "{{ lookup('env', 'JAVA_HOME') }}"
+        debug:
+          var: javahome
+        tags:
+          - testenv
+
+      - name: traitement du retour d'une commande
+        vars:
+          varlines: "{{ query('lines', 'cat files/dum.txt') }}"
+          varpipe: "{{ lookup('pipe', 'cat files/dum.txt') }}"
+          password: "{{ lookup('password', 'files/' + item + ' length=9') }}"
+        debug:
+          msg: "Creating user {{ item }}"
+        loop: "{{ query('lines', 'cat files/users.txt') }}"
+        tags:
+          - testcmd

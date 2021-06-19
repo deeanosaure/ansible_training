@@ -1,0 +1,33 @@
+---
+- name: Confirm that the second list element is "Marvin"
+  hosts: localhost
+  tasks:
+    - name: Find deployed webapp files
+      find:
+        paths: "/home/deanosaure/Bureau/ansible/work/helloworld"
+        recurse: yes
+      register: webapp_find_files
+
+    - name: Compute webapp file list
+      set_fact:
+        webapp_deployed_files: "{{ webapp_find_files['files'] | map(attribute='path') | list }}"
+     
+    - name: show me the result of ex 1 
+      debug: 
+        var: webapp_deployed_files
+
+    - name: Compute relative webapp file list
+      vars:
+        webapp_content_root_dir: "/home/deanosaure/Bureau/ansible/work/helloworld"
+      set_fact:
+        webapp_rel_deployed_files: "{{ webapp_deployed_files | map('relpath', webapp_content_root_dir) | list}}"
+
+    - name: show me the result of ex 2
+      debug:
+        var: webapp_rel_deployed_files
+
+    - name: Remove Extraneous Files
+      file:
+        path: "{{ webapp_content_root_dir }}/{{ item }}"
+        state: absent
+      loop: "{{ webapp_rel_deployed_files | difference(webapp_file_list) }}"

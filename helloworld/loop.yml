@@ -1,0 +1,21 @@
+---
+
+- name: testins Loops
+  hosts: localhost
+  tasks:
+   - name: "Testing simple loop"
+     debug: 
+      msg: "salut je suis {{ item }}"
+     loop:
+      - caca
+      - pipi
+      - grandis
+
+   - name: "testing loop on list of dict"
+     debug:
+      msg: "yo je suis {{ item.nom }} et je sors avec {{ item.cops }}"
+     loop:
+      - nom: dean
+        cops: lol
+      - nom: poupee
+        cops: russe

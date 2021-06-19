@@ -1,0 +1,9 @@
+---
+# tasks file for helloworld
+
+- name: Afficher helloworld
+  vars: 
+    helloworld_myname: 
+  debug:
+    msg: Hello world this is my first playbook ! Written by {{ helloworld_myname }}
+
